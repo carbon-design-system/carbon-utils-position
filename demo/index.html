@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>position</title>
+		<style>
+			* {
+				box-sizing: border-box;
+			}
+
+			.demo {
+				margin: 20px;
+			}
+
+			.demo1 {
+				padding: 20px;
+			}
+
+			.reference {
+				width: 100px;
+				height: 100px;
+				border: 1px solid blue;
+			}
+
+			.target {
+				width: 100px;
+				height: 50px;
+				border: 1px solid gray;
+				position: absolute;
+			}
+
+			.ref3 {
+				width: initial;
+				height: initial;
+				padding: 50px;
+			}
+
+			.tar4 {
+				height: 100px;
+				padding: 20px;
+			}
+
+			.ref5 {
+				margin: 50px;
+			}
+
+			.tar6 {
+				margin: 50px;
+			}
+		</style>
+	</head>
+	<body>
+		<span>default</span>
+		<div class="reference ref0">reference element</div>
+		<div class="target tar0">target element</div>
+		<div class="demo">
+			<span>in a container with margins</span>
+			<div class="reference ref1">reference element</div>
+			<div class="target tar1">target element</div>
+		</div>
+		<div class="demo demo1">
+			<span>in a container with margins and padding</span>
+			<div class="reference ref2">reference element</div>
+			<div class="target tar2">target element</div>
+		</div>
+		<div class="demo">
+			<span>with padding on the reference element</span>
+			<div class="reference ref3">reference element</div>
+			<div class="target tar3">target element</div>
+		</div>
+		<div class="demo">
+			<span>with padding on the target element</span>
+			<div class="reference ref4">reference element</div>
+			<div class="target tar4">target element</div>
+		</div>
+		<div class="demo">
+			<span>with margin on the reference element</span>
+			<div class="reference ref5">reference element</div>
+			<div class="target tar5">target element</div>
+		</div>
+		<div class="demo">
+			<span>with margin on the target element</span>
+			<div class="reference ref6">reference element</div>
+			<div class="target tar6">target element</div>
+		</div>
+		<script src="./index.ts"></script>
+	</body>
+</html>
