@@ -10,24 +10,29 @@ export interface AbsolutePosition {
 
 export type Offset = { top: number, left: number };
 
+export type ReferenceRect = {
+	height: number;
+	width: number;
+};
+
 export type Positions = {
-	[key: string]: (referenceOffset: Offset, target: HTMLElement, referenceRect: ClientRect | DOMRect) => AbsolutePosition
+	[key: string]: (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect) => AbsolutePosition
 };
 
 export const defaultPositions: Positions = {
-	"left": (referenceOffset: Offset, target: HTMLElement, referenceRect: ClientRect | DOMRect): AbsolutePosition => ({
+	"left": (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
 		top: referenceOffset.top - Math.round(target.offsetHeight / 2) + Math.round(referenceRect.height / 2),
 		left: Math.round(referenceOffset.left - target.offsetWidth)
 	}),
-	"right": (referenceOffset: Offset, target: HTMLElement, referenceRect: ClientRect | DOMRect): AbsolutePosition => ({
+	"right": (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
 		top: referenceOffset.top - Math.round(target.offsetHeight / 2) + Math.round(referenceRect.height / 2),
 		left: Math.round(referenceOffset.left + referenceRect.width)
 	}),
-	"top": (referenceOffset: Offset, target: HTMLElement, referenceRect: ClientRect | DOMRect): AbsolutePosition => ({
+	"top": (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
 		top: Math.round(referenceOffset.top - target.offsetHeight),
 		left: referenceOffset.left - Math.round(target.offsetWidth / 2) + Math.round(referenceRect.width / 2)
 	}),
-	"bottom": (referenceOffset: Offset, target: HTMLElement, referenceRect: ClientRect | DOMRect): AbsolutePosition => ({
+	"bottom": (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
 		top: Math.round(referenceOffset.top + referenceRect.height),
 		left: referenceOffset.left - Math.round(target.offsetWidth / 2) + Math.round(referenceRect.width / 2)
 	})
@@ -37,7 +42,7 @@ export default class Position {
 	protected positions = defaultPositions;
 
 	constructor(positions: Positions = {}) {
-		Object.assign({}, defaultPositions, positions);
+		this.positions = Object.assign({}, defaultPositions, positions);
 	}
 
 	getRelativeOffset(target: HTMLElement): Offset {
@@ -93,22 +98,29 @@ export default class Position {
 	}
 
 	// finds the position relative to the `reference` element
-	findRelative(reference: HTMLElement, target: HTMLElement, placement: string): AbsolutePosition {
-		const referenceOffset = this.getRelativeOffset(reference);
-		return this.calculatePosition(referenceOffset, reference, target, placement);
+	findRelative(reference: Element, target: Element, placement: string): AbsolutePosition {
+		const referenceOffset = this.getRelativeOffset(reference as HTMLElement);
+		const referenceRect = reference.getBoundingClientRect();
+		return this.calculatePosition(referenceOffset, referenceRect, target, placement);
 	}
 
-	findAbsolute(reference: HTMLElement, target: HTMLElement, placement: string): AbsolutePosition {
-		const referenceOffset = this.getAbsoluteOffset(reference);
-		return this.calculatePosition(referenceOffset, reference, target, placement);
+	findAbsolute(reference: Element, target: Element, placement: string): AbsolutePosition {
+		const referenceOffset = this.getAbsoluteOffset(reference as HTMLElement);
+		const referenceRect = reference.getBoundingClientRect();
+		return this.calculatePosition(referenceOffset, referenceRect, target, placement);
 	}
 
-	findPosition(reference: HTMLElement,
-		target: HTMLElement,
+	findPosition(reference: Element,
+		target: Element,
 		placement: string,
 		offsetFunction = this.getAbsoluteOffset): AbsolutePosition {
-		const referenceOffset = offsetFunction(reference);
-		return this.calculatePosition(referenceOffset, reference, target, placement);
+		const referenceOffset = offsetFunction(reference as HTMLElement);
+		const referenceRect = reference.getBoundingClientRect();
+		return this.calculatePosition(referenceOffset, referenceRect, target, placement);
+	}
+
+	findPositionAt(offset: Offset, target: Element, placement: string): AbsolutePosition {
+		return this.calculatePosition(offset, {height: 0, width: 0}, target, placement);
 	}
 
 	/**
@@ -133,25 +145,25 @@ export default class Position {
 		});
 	}
 
-	setElement(element: HTMLElement, position: AbsolutePosition): void {
-		element.style.top = `${position.top}px`;
-		element.style.left = `${position.left}px`;
+	setElement(element: Element, position: AbsolutePosition): void {
+		(element as HTMLElement).style.top = `${position.top}px`;
+		(element as HTMLElement).style.left = `${position.left}px`;
 	}
 
-	findBestPlacement(reference: HTMLElement, target: HTMLElement, placements: string[]) {
+	findBestPlacement(reference: Element, target: Element, placements: string[]) {
 		/**
 		 * map over the array of placements and weight them based on the percentage of visible area
 		 * where visible area is defined as the area not obscured by the window borders
 		 */
 		const weightedPlacements = placements.map(placement => {
 			const pos = this.findPosition(reference, target, placement);
-			let box = this.getPlacementBox(target, pos);
+			let box = this.getPlacementBox((target as HTMLElement), pos);
 			let hiddenHeight = box.bottom - window.innerHeight - window.scrollY;
 			let hiddenWidth = box.right - window.innerWidth - window.scrollX;
 			// if the hiddenHeight or hiddenWidth is negative, reset to offsetHeight or offsetWidth
-			hiddenHeight = hiddenHeight < 0 ? target.offsetHeight : hiddenHeight;
-			hiddenWidth = hiddenWidth < 0 ? target.offsetWidth : hiddenWidth;
-			const area = target.offsetHeight * target.offsetWidth;
+			hiddenHeight = hiddenHeight < 0 ? (target as HTMLElement).offsetHeight : hiddenHeight;
+			hiddenWidth = hiddenWidth < 0 ? (target as HTMLElement).offsetWidth : hiddenWidth;
+			const area = (target as HTMLElement).offsetHeight * (target as HTMLElement).offsetWidth;
 			const hiddenArea = hiddenHeight * hiddenWidth;
 			let visibleArea = area - hiddenArea;
 			// if the visibleArea is 0 set it back to area (to calculate the percentage in a useful way)
@@ -169,9 +181,11 @@ export default class Position {
 		return weightedPlacements[0].placement;
 	}
 
-	private calculatePosition(referenceOffset: Offset, reference: HTMLElement, target: HTMLElement, placement: string): AbsolutePosition {
-		// calculate offsets for a given position
-		const referenceRect = reference.getBoundingClientRect();
+	protected calculatePosition(
+		referenceOffset: Offset,
+		referenceRect: ReferenceRect,
+		target: Element,
+		placement: string): AbsolutePosition {
 
 		if (this.positions[placement]) {
 			return this.positions[placement](referenceOffset, target, referenceRect);
