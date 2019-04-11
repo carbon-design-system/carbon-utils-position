@@ -2,9 +2,9 @@
 // Generated on Wed Apr 10 2019 14:44:50 GMT-0400 (Eastern Daylight Time)
 module.exports = function(config) {
 
-	let browsers = ["ChromeHeadless", "Firefox", "Safari", "Chrome"];
+	let browsers = ["ChromeHeadless", "FirefoxHeadless", "Safari"];
 	if (process.env.CI) {
-		browsers = ["ChromeHeadless"]
+		browsers = ["ChromeHeadless", "FirefoxHeadless"]
 	}
 	config.set({
 		// base path that will be used to resolve all patterns (eg. files, exclude)
@@ -35,6 +35,7 @@ module.exports = function(config) {
 		},
 		// webpack config
 		webpack: {
+			mode: "development",
 			module: {
 				rules: [
 					{
@@ -66,6 +67,12 @@ module.exports = function(config) {
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
 		browsers,
+		customLaunchers: {
+			FirefoxHeadless: {
+				base: "Firefox",
+				flags: ["-headless"]
+			}
+		},
 		// Continuous Integration mode
 		// if true, Karma captures browsers, runs the tests and exits
 		singleRun: !!process.env.CI,
