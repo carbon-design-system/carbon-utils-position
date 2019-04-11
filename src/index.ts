@@ -188,7 +188,7 @@ export default class Position {
 		placement: string): AbsolutePosition {
 
 		if (this.positions[placement]) {
-			return this.positions[placement](referenceOffset, target, referenceRect);
+			return this.positions[placement](referenceOffset, target as HTMLElement, referenceRect);
 		}
 		console.error("No function found for placement, defaulting to 0,0");
 		return { left: 0, top: 0 };
