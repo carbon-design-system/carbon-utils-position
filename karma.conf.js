@@ -4,7 +4,7 @@ module.exports = function(config) {
 
 	let browsers = ["ChromeHeadless", "FirefoxHeadless", "Safari"];
 	if (process.env.CI) {
-		browsers = ["ChromeHeadless"]
+		browsers = ["ChromeNoSandbox"]
 	}
 	config.set({
 		// base path that will be used to resolve all patterns (eg. files, exclude)
@@ -71,6 +71,10 @@ module.exports = function(config) {
 			FirefoxHeadless: {
 				base: "Firefox",
 				flags: ["-headless"]
+			},
+			ChromeNoSandbox: {
+				base: "ChromeHeadless",
+				flags: ["--no-sandbox"]
 			}
 		},
 		// Continuous Integration mode
