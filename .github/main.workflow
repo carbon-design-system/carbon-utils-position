@@ -19,7 +19,7 @@ action "npm build" {
 }
 
 action "npm test" {
-  uses = "cal-smith/github-action-npm-browsers"
+  uses = "cal-smith/github-action-npm-browsers@master"
   needs = ["npm install"]
   args = "test"
   env = {
