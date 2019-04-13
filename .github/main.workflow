@@ -27,11 +27,20 @@ action "npm test" {
   }
 }
 
-workflow "New workflow" {
-  resolves = ["Filters for GitHub Actions"]
+workflow "Add issues to project" {
   on = "issues"
+  resolves = ["GraphQL query"]
 }
 
 action "Filters for GitHub Actions" {
   uses = "actions/bin/filter@4227a6636cb419f91a0d1afb1216ecfab99e433a"
+  args = "action 'opened|reopened'"
+  secrets = ["GITHUB_TOKEN"]
+}
+
+action "GraphQL query" {
+  uses = "helaili/github-graphql-action@fb0ce78d56777b082e1a1659faf2b9f5a8832ed3"
+  needs = ["Filters for GitHub Actions"]
+  secrets = ["GITHUB_TOKEN"]
+  args = "--query .github/graphql/add-to-project.yaml"
 }
