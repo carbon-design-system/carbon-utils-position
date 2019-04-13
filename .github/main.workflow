@@ -26,3 +26,12 @@ action "npm test" {
     CI = "true"
   }
 }
+
+workflow "New workflow" {
+  resolves = ["Filters for GitHub Actions"]
+  on = "issues"
+}
+
+action "Filters for GitHub Actions" {
+  uses = "actions/bin/filter@4227a6636cb419f91a0d1afb1216ecfab99e433a"
+}
