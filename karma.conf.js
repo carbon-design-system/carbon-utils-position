@@ -4,7 +4,7 @@ module.exports = function(config) {
 
 	let browsers = ["ChromeHeadless", "FirefoxHeadless", "Safari"];
 	if (process.env.CI) {
-		browsers = ["ChromeNoSandbox"]
+		browsers = ["ChromeNoSandbox", "FirefoxHeadless"]
 	}
 	config.set({
 		// base path that will be used to resolve all patterns (eg. files, exclude)
