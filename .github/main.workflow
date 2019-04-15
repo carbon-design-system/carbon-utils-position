@@ -47,11 +47,16 @@ action "GraphQL query" {
 
 workflow "Publish package" {
   on = "push"
-  resolves = ["test", "publish"]
+  resolves = [
+    "test",
+    "filter for master",
+    "publish",
+  ]
 }
 
 action "install" {
   uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
+  needs = ["filter for master"]
   args = "install"
 }
 
@@ -74,4 +79,10 @@ action "publish" {
   uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
   needs = ["build", "test"]
   args = "publish dist --dry-run"
+  secrets = ["GITHUB_TOKEN"]
+}
+
+action "filter for master" {
+  uses = "actions/bin/filter@4227a6636cb419f91a0d1afb1216ecfab99e433a"
+  args = "branch master"
 }
