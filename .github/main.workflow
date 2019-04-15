@@ -44,3 +44,34 @@ action "GraphQL query" {
   secrets = ["GITHUB_TOKEN"]
   args = "--query .github/graphql/add-to-project.yaml"
 }
+
+workflow "Publish package" {
+  on = "push"
+  resolves = ["test", "publish"]
+}
+
+action "install" {
+  uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
+  args = "install"
+}
+
+action "build" {
+  uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
+  needs = ["install"]
+  args = "build"
+}
+
+action "test" {
+  uses = "cal-smith/github-action-npm-browsers@master"
+  needs = ["install"]
+  args = "test"
+  env = {
+    CI = "true"
+  }
+}
+
+action "publish" {
+  uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
+  needs = ["build", "test"]
+  args = "publish dist --dry-run"
+}
