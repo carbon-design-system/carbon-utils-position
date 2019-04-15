@@ -10,6 +10,9 @@
     "demo:build": "parcel build demo/index.html -d dist/demo",
     "test": "karma start"
   },
+  "publishConfig": {
+	  "access": "public"
+  },
   "author": "cal-smith",
   "license": "MIT",
   "devDependencies": {
