@@ -80,8 +80,8 @@ action "publish" {
   needs = ["build", "test"]
   args = "run semantic-release"
   secrets = [
-    "GITHUB_TOKEN",
     "NPM_TOKEN",
+    "GH_TOKEN",
   ]
 }
 
