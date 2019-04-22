@@ -1,5 +1,5 @@
 {
-  "name": "@carbon-utils/position",
+  "name": "@carbon/utils-position",
   "version": "0.0.1",
   "description": "Position elements relative to other elements",
   "main": "index.js",
@@ -8,7 +8,8 @@
     "lint": "tslint",
     "demo:server": "parcel demo/index.html -d dist/demo",
     "demo:build": "parcel build demo/index.html -d dist/demo",
-    "test": "karma start"
+	"test": "karma start",
+	"semantic-release": "semantic-release"
   },
   "publishConfig": {
 	  "access": "public"
