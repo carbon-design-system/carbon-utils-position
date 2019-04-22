@@ -63,7 +63,7 @@ action "install" {
 action "build" {
   uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
   needs = ["install"]
-  args = "build"
+  args = "run build"
 }
 
 action "test" {
@@ -78,8 +78,11 @@ action "test" {
 action "publish" {
   uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
   needs = ["build", "test"]
-  args = "publish dist --dry-run"
-  secrets = ["GITHUB_TOKEN"]
+  args = "run semantic-release"
+  secrets = [
+    "GITHUB_TOKEN",
+    "NPM_TOKEN",
+  ]
 }
 
 action "filter for master" {
