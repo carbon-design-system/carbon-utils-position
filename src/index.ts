@@ -2,6 +2,13 @@
  * Utilites to manipulate the position of elements relative to other elements
  */
 
+export const PLACEMENTS = {
+    LEFT: "left",
+    RIGHT: "right",
+    TOP: "top",
+    BOTTOM: "bottom"
+}
+
 export interface AbsolutePosition {
 	top: number;
 	left: number;
@@ -20,19 +27,19 @@ export type Positions = {
 };
 
 export const defaultPositions: Positions = {
-	"left": (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
+	[PLACEMENTS.LEFT]: (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
 		top: referenceOffset.top - Math.round(target.offsetHeight / 2) + Math.round(referenceRect.height / 2),
 		left: Math.round(referenceOffset.left - target.offsetWidth)
 	}),
-	"right": (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
+	[PLACEMENTS.RIGHT]: (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
 		top: referenceOffset.top - Math.round(target.offsetHeight / 2) + Math.round(referenceRect.height / 2),
 		left: Math.round(referenceOffset.left + referenceRect.width)
 	}),
-	"top": (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
+	[PLACEMENTS.TOP]: (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
 		top: Math.round(referenceOffset.top - target.offsetHeight),
 		left: referenceOffset.left - Math.round(target.offsetWidth / 2) + Math.round(referenceRect.width / 2)
 	}),
-	"bottom": (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
+	[PLACEMENTS.BOTTOM]: (referenceOffset: Offset, target: HTMLElement, referenceRect: ReferenceRect): AbsolutePosition => ({
 		top: Math.round(referenceOffset.top + referenceRect.height),
 		left: referenceOffset.left - Math.round(target.offsetWidth / 2) + Math.round(referenceRect.width / 2)
 	})
@@ -168,6 +175,38 @@ export default class Position {
 			let visibleArea = area - hiddenArea;
 			// if the visibleArea is 0 set it back to area (to calculate the percentage in a useful way)
 			visibleArea = visibleArea === 0 ? area : visibleArea;
+			const visiblePercent = visibleArea / area;
+			return {
+				placement,
+				weight: visiblePercent
+			};
+		});
+
+		// sort the placements from best to worst
+		weightedPlacements.sort((a, b) => b.weight - a.weight);
+		// pick the best!
+		return weightedPlacements[0].placement;
+	}
+	
+	findBestPlacementAt(offset: Offset, reference: Element, target: Element, placements: string[]) {
+		/**
+		 * map over the array of placements and weight them based on the percentage of visible area
+		 * where visible area is defined as the area not obscured by the reference borders
+		 */
+		const weightedPlacements = placements.map(placement => {
+			const pos = this.findPositionAt(offset, target, placement);
+            let box = this.getPlacementBox((target as HTMLElement), pos);
+			let hiddenHeight = box.bottom - (reference as HTMLElement).offsetHeight;
+            let hiddenWidth = box.right - (reference as HTMLElement).offsetWidth;
+			// if the hiddenHeight or hiddenWidth is negative, reset to offsetHeight or offsetWidth
+			hiddenHeight = hiddenHeight < 0 ? (target as HTMLElement).offsetHeight : hiddenHeight;
+            hiddenWidth = hiddenWidth < 0 ? (target as HTMLElement).offsetWidth : hiddenWidth;
+			const area = (target as HTMLElement).offsetHeight * (target as HTMLElement).offsetWidth;
+			const hiddenArea = hiddenHeight * hiddenWidth;
+			let visibleArea = area - hiddenArea;
+			// if the visibleArea is 0 set it back to area (to calculate the percentage in a useful way)
+            visibleArea = visibleArea === 0 ? area : visibleArea;
+
 			const visiblePercent = visibleArea / area;
 			return {
 				placement,
