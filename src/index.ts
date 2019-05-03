@@ -195,19 +195,14 @@ export default class Position {
 
 	findBestPlacementAt(
 		offset: Offset,
-		reference: Element,
 		target: Element,
-		placements: string[]) {
+		placements: string[],
+		containerFunction: () => ReferenceRect = this.defaultContainerFunction) {
 		const positionAt = (_: any, target: Element, placement: string) => {
 			return this.findPositionAt(offset, target, placement);
 		};
 
-		const containerFunction = (): ReferenceRect => ({
-			width: (reference as HTMLElement).offsetWidth,
-			height: (reference as HTMLElement).offsetHeight
-		});
-
-		return this.findBestPlacement(reference, target, placements, containerFunction, positionAt);
+		return this.findBestPlacement(null as any, target, placements, containerFunction, positionAt);
 	}
 
 	protected defaultContainerFunction(): ReferenceRect {
