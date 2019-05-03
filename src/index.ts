@@ -2,11 +2,11 @@
  * Utilites to manipulate the position of elements relative to other elements
  */
 
-export const PLACEMENTS = {
-    LEFT: "left",
-    RIGHT: "right",
-    TOP: "top",
-    BOTTOM: "bottom"
+export enum PLACEMENTS {
+    LEFT = "left",
+    RIGHT = "right",
+    TOP = "top",
+    BOTTOM = "bottom"
 }
 
 export interface AbsolutePosition {
@@ -157,16 +157,21 @@ export default class Position {
 		(element as HTMLElement).style.left = `${position.left}px`;
 	}
 
-	findBestPlacement(reference: Element, target: Element, placements: string[]) {
+	findBestPlacement(
+		reference: Element,
+		target: Element,
+		placements: string[],
+		containerFunction: () => ReferenceRect = this.defaultContainerFunction,
+		positionFunction = this.findPosition) {
 		/**
 		 * map over the array of placements and weight them based on the percentage of visible area
 		 * where visible area is defined as the area not obscured by the window borders
 		 */
 		const weightedPlacements = placements.map(placement => {
-			const pos = this.findPosition(reference, target, placement);
+			const pos = positionFunction(reference, target, placement);
 			let box = this.getPlacementBox((target as HTMLElement), pos);
-			let hiddenHeight = box.bottom - window.innerHeight - window.scrollY;
-			let hiddenWidth = box.right - window.innerWidth - window.scrollX;
+			let hiddenHeight = box.bottom - containerFunction().height;
+			let hiddenWidth = box.right - containerFunction().width;
 			// if the hiddenHeight or hiddenWidth is negative, reset to offsetHeight or offsetWidth
 			hiddenHeight = hiddenHeight < 0 ? (target as HTMLElement).offsetHeight : hiddenHeight;
 			hiddenWidth = hiddenWidth < 0 ? (target as HTMLElement).offsetWidth : hiddenWidth;
@@ -187,37 +192,30 @@ export default class Position {
 		// pick the best!
 		return weightedPlacements[0].placement;
 	}
-	
-	findBestPlacementAt(offset: Offset, reference: Element, target: Element, placements: string[]) {
-		/**
-		 * map over the array of placements and weight them based on the percentage of visible area
-		 * where visible area is defined as the area not obscured by the reference borders
-		 */
-		const weightedPlacements = placements.map(placement => {
-			const pos = this.findPositionAt(offset, target, placement);
-            let box = this.getPlacementBox((target as HTMLElement), pos);
-			let hiddenHeight = box.bottom - (reference as HTMLElement).offsetHeight;
-            let hiddenWidth = box.right - (reference as HTMLElement).offsetWidth;
-			// if the hiddenHeight or hiddenWidth is negative, reset to offsetHeight or offsetWidth
-			hiddenHeight = hiddenHeight < 0 ? (target as HTMLElement).offsetHeight : hiddenHeight;
-            hiddenWidth = hiddenWidth < 0 ? (target as HTMLElement).offsetWidth : hiddenWidth;
-			const area = (target as HTMLElement).offsetHeight * (target as HTMLElement).offsetWidth;
-			const hiddenArea = hiddenHeight * hiddenWidth;
-			let visibleArea = area - hiddenArea;
-			// if the visibleArea is 0 set it back to area (to calculate the percentage in a useful way)
-            visibleArea = visibleArea === 0 ? area : visibleArea;
 
-			const visiblePercent = visibleArea / area;
-			return {
-				placement,
-				weight: visiblePercent
-			};
+	findBestPlacementAt(
+		offset: Offset,
+		reference: Element,
+		target: Element,
+		placements: string[]) {
+		const positionAt = (_: any, target: Element, placement: string) => {
+			return this.findPositionAt(offset, target, placement);
+		};
+
+		const containerFunction = (): ReferenceRect => ({
+			width: (reference as HTMLElement).offsetWidth,
+			height: (reference as HTMLElement).offsetHeight
 		});
 
-		// sort the placements from best to worst
-		weightedPlacements.sort((a, b) => b.weight - a.weight);
-		// pick the best!
-		return weightedPlacements[0].placement;
+		return this.findBestPlacement(reference, target, placements, containerFunction, positionAt);
+	}
+
+	protected defaultContainerFunction(): ReferenceRect {
+		return {
+			// we go with window here, because that's going to be the simple/common case
+			width: window.innerHeight - window.scrollY,
+			height: window.innerWidth - window.scrollX
+		};
 	}
 
 	protected calculatePosition(

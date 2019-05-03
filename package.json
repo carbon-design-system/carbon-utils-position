@@ -8,15 +8,15 @@
     "lint": "tslint",
     "demo:server": "parcel demo/index.html -d dist/demo",
     "demo:build": "parcel build demo/index.html -d dist/demo",
-	"test": "karma start",
-	"semantic-release": "semantic-release"
+    "test": "karma start",
+    "semantic-release": "semantic-release"
   },
   "publishConfig": {
-	  "access": "public"
+    "access": "public"
   },
   "release": {
-	"pkgRoot": "dist"
-},
+    "pkgRoot": "dist"
+  },
   "author": "cal-smith",
   "license": "MIT",
   "devDependencies": {
@@ -31,7 +31,7 @@
     "karma-safari-launcher": "^1.0.0",
     "karma-webpack": "^3.0.5",
     "parcel-bundler": "^1.12.1",
-    "semantic-release": "^15.13.3",
+    "semantic-release": "^15.13.12",
     "ts-loader": "^5.3.3",
     "tslint": "^5.15.0",
     "typescript": "^3.4.3",
