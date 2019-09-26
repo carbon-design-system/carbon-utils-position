@@ -13,14 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Test
     steps:
-      env:
-        CI: true
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: 12
       - run: npm i
       - run: npm test
+        env:
+          CI: true
   build:
     needs: test
     name: Build
