@@ -1,18 +1,24 @@
 name: CI
 
 on:
-  - push:
+  push:
     branches:
       - master
-  - pull_request
+  pull_request
+    branches:
+      - master
 
 jobs:
   test:
     runs-on: ubuntu-latest
     name: Test
     steps:
-      - name: Test
-        run: echo 'test test'
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm i
+      - run: npm test
   build:
     name: Build
     runs-on: ubuntu-latest
