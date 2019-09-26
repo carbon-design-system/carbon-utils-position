@@ -3,10 +3,10 @@
  */
 
 export enum PLACEMENTS {
-    LEFT = "left",
-    RIGHT = "right",
-    TOP = "top",
-    BOTTOM = "bottom"
+	LEFT = "left",
+	RIGHT = "right",
+	TOP = "top",
+	BOTTOM = "bottom"
 }
 
 export interface AbsolutePosition {
