@@ -17,8 +17,20 @@
   "release": {
     "pkgRoot": "dist"
   },
-  "author": "cal-smith",
+  "author": "IBM",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carbon-design-system/carbon-utils-position.git"
+  },
+  "keywords": [
+    "position",
+    "typescript"
+  ],
+  "bugs": {
+    "url": "https://github.com/carbon-design-system/carbon-utils-position/issues"
+  },
+  "homepage": "https://github.com/carbon-design-system/carbon-utils-position#readme",
   "devDependencies": {
     "@types/jasmine": "^3.3.12",
     "@types/karma": "^3.0.2",
@@ -36,5 +48,11 @@
     "tslint": "^5.15.0",
     "typescript": "^3.4.3",
     "webpack": "^4.29.6"
-  }
+  },
+  "maintainers": [
+		{
+			"name": "Cal Smith",
+			"email": "callums@ca.ibm.com"
+		}
+	]
 }
