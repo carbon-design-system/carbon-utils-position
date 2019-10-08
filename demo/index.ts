@@ -19,6 +19,7 @@ positionDemoElements(".ref4", ".tar4", "right");
 positionDemoElements(".ref5", ".tar5", "right");
 positionDemoElements(".ref6", ".tar6", "right");
 positionDemoElements(".ref7", ".tar7", "right");
+positionDemoElements(".ref10", ".tar10", "bottom");
 
 document.addEventListener("click", (event: MouseEvent) => {
 	if (document.querySelector<HTMLInputElement>(".ref8 .demo-enabled").checked) {

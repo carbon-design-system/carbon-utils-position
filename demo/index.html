@@ -52,6 +52,10 @@
 			.tar6 {
 				margin: 50px;
 			}
+
+			main {
+				margin: 120px 130px 140px 100px;
+			}
 		</style>
 	</head>
 	<body>
@@ -89,10 +93,18 @@
 			<div class="target tar6">target element</div>
 		</div>
 
+		<main>
+			<div class="demo">
+				<span>with a <code>&lt;main&gt;</code> with margins</span>
+				<div class="reference ref10">reference element</div>
+			</div>
+		</main>
+
+
 		<div class="demo nested">
 			<div class="reference ref7">reference element (nested)</div>
 		</div>
-		<div class="target tar7">target element (in body)</div>
+
 
 		<div class="demo">
 			<div class="reference ref8">
@@ -102,7 +114,7 @@
 					<input class="demo-enabled" type="checkbox" checked="false"/>
 				</label>
 			</div>
-			<div class="target tar8">target element</div>
+
 		</div>
 
 		<div class="demo">
@@ -113,7 +125,14 @@
 					<input class="demo-enabled" type="checkbox" checked="false"/>
 				</label>
 			</div>
+
+		</div>
+
+		<div class="targets">
+			<div class="target tar7">target element (in body)</div>
+			<div class="target tar8">target element</div>
 			<div class="target tar9">target element</div>
+			<div class="target tar10">target element</div>
 		</div>
 		<script src="./index.ts"></script>
 	</body>
