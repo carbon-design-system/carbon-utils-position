@@ -235,3 +235,5 @@ export class Position {
 }
 
 export const position = new Position();
+
+export default Position;
