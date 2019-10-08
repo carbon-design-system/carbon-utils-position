@@ -45,7 +45,14 @@ export const defaultPositions: Positions = {
 	})
 };
 
-export default class Position {
+const windowRef = typeof window !== "undefined" ? window : {
+	innerHeight: 0,
+	scrollY: 0,
+	innerWidth: 0,
+	scrollX: 0
+};
+
+export class Position {
 	protected positions = defaultPositions;
 
 	constructor(positions: Positions = {}) {
@@ -208,8 +215,8 @@ export default class Position {
 	protected defaultContainerFunction(): ReferenceRect {
 		return {
 			// we go with window here, because that's going to be the simple/common case
-			width: window.innerHeight - window.scrollY,
-			height: window.innerWidth - window.scrollX
+			width: windowRef.innerHeight - windowRef.scrollY,
+			height: windowRef.innerWidth - windowRef.scrollX
 		};
 	}
 
