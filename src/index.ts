@@ -127,7 +127,7 @@ export class Position {
 	findPosition(reference: Element,
 		target: Element,
 		placement: string,
-		offsetFunction = this.getAbsoluteOffset): AbsolutePosition {
+		offsetFunction = this.getAbsoluteOffset.bind(this)): AbsolutePosition {
 		const referenceOffset = offsetFunction(reference as HTMLElement);
 		const referenceRect = reference.getBoundingClientRect();
 		return this.calculatePosition(referenceOffset, referenceRect, target, placement);
@@ -168,8 +168,8 @@ export class Position {
 		reference: Element,
 		target: Element,
 		placements: string[],
-		containerFunction: () => ReferenceRect = this.defaultContainerFunction,
-		positionFunction = this.findPosition) {
+		containerFunction: () => ReferenceRect = this.defaultContainerFunction.bind(this),
+		positionFunction = this.findPosition.bind(this)) {
 		/**
 		 * map over the array of placements and weight them based on the percentage of visible area
 		 * where visible area is defined as the area not obscured by the window borders
@@ -204,7 +204,7 @@ export class Position {
 		offset: Offset,
 		target: Element,
 		placements: string[],
-		containerFunction: () => ReferenceRect = this.defaultContainerFunction) {
+		containerFunction: () => ReferenceRect = this.defaultContainerFunction.bind(this)) {
 		const positionAt = (_: any, target: Element, placement: string) => {
 			return this.findPositionAt(offset, target, placement);
 		};
