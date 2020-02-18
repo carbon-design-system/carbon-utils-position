@@ -181,14 +181,14 @@ export class Position {
 			let hiddenWidth = 0;
 			const container = containerFunction();
 			if (box.top < 0) {
-			  hiddenHeight = -box.top;
+				hiddenHeight = -box.top;
 			} else if (box.bottom > container.height) {
-			  hiddenHeight = box.bottom - container.height;
+				hiddenHeight = box.bottom - container.height;
 			}
 			if (box.left < 0) {
-			  hiddenWidth = -box.left;
+				hiddenWidth = -box.left;
 			} else if (box.right > container.width) {
-			  hiddenWidth = box.right - container.width;
+				hiddenWidth = box.right - container.width;
 			}
 			const area = (target as HTMLElement).offsetHeight * (target as HTMLElement).offsetWidth;
 			const hiddenArea = hiddenHeight * hiddenWidth;
