@@ -223,10 +223,10 @@ export class Position {
 	protected defaultContainerFunction(): ReferenceRect {
 		return {
 			// we go with window here, because that's going to be the simple/common case
-			top: windowRef.scrollY,
-			left: windowRef.scrollX,
-			height: windowRef.innerHeight + windowRef.scrollY,
-			width: windowRef.innerWidth + windowRef.scrollX
+			top: 0,
+			left: 0,
+			height: windowRef.innerHeight,
+			width: windowRef.innerWidth
 		};
 	}
 
