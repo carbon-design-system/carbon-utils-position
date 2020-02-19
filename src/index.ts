@@ -182,16 +182,20 @@ export class Position {
 			let hiddenHeight = 0;
 			let hiddenWidth = 0;
 			const container = containerFunction();
+			// the element is exceeding from top or bottom of its container
 			if (box.top < container.top) {
 				hiddenHeight = container.top - box.top;
 			} else if (box.bottom > container.height) {
 				hiddenHeight = box.bottom - container.height;
 			}
+			// the element is exceeding from left or right of its container
 			if (box.left < container.left) {
 				hiddenWidth = container.left - box.left;
 			} else if (box.right > container.width) {
 				hiddenWidth = box.right - container.width;
 			}
+			// if one of the hidden dimensions is 0 but the other is > 0
+			// we want to have a positive area, so setting the null one to target dimension
 			if (hiddenHeight && !hiddenWidth) {
 				hiddenWidth = (target as HTMLElement).offsetWidth;
 			} else if (hiddenWidth && !hiddenHeight) {
@@ -199,6 +203,8 @@ export class Position {
 			}
 			const area = (target as HTMLElement).offsetHeight * (target as HTMLElement).offsetWidth;
 			const hiddenArea = hiddenHeight * hiddenWidth;
+			// if visibleArea is 0 it means the element is fully outside container bounds
+			// and visiblePercent will then be 0
 			let visibleArea = area - hiddenArea;
 			const visiblePercent = visibleArea / area;
 			return {
