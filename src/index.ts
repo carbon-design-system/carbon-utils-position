@@ -18,6 +18,8 @@ export interface AbsolutePosition {
 export type Offset = { top: number, left: number };
 
 export type ReferenceRect = {
+	top: numnber;
+	left: number;
 	height: number;
 	width: number;
 };
@@ -180,13 +182,13 @@ export class Position {
 			let hiddenHeight = 0;
 			let hiddenWidth = 0;
 			const container = containerFunction();
-			if (box.top < 0) {
-				hiddenHeight = -box.top;
+			if (box.top < container.top) {
+				hiddenHeight = container.top - box.top;
 			} else if (box.bottom > container.height) {
 				hiddenHeight = box.bottom - container.height;
 			}
-			if (box.left < 0) {
-				hiddenWidth = -box.left;
+			if (box.left < container.left) {
+				hiddenWidth = container.left - box.left;
 			} else if (box.right > container.width) {
 				hiddenWidth = box.right - container.width;
 			}
@@ -221,8 +223,10 @@ export class Position {
 	protected defaultContainerFunction(): ReferenceRect {
 		return {
 			// we go with window here, because that's going to be the simple/common case
-			width: windowRef.innerHeight - windowRef.scrollY,
-			height: windowRef.innerWidth - windowRef.scrollX
+			top: windowRef.scrollY,
+			left: windowRef.scrollX,
+			height: windowRef.innerHeight + windowRef.scrollY,
+			width: windowRef.innerWidth + windowRef.scrollX
 		};
 	}
 
