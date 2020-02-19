@@ -18,7 +18,7 @@ export interface AbsolutePosition {
 export type Offset = { top: number, left: number };
 
 export type ReferenceRect = {
-	top: numnber;
+	top: number;
 	left: number;
 	height: number;
 	width: number;
