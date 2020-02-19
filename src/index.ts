@@ -192,6 +192,11 @@ export class Position {
 			} else if (box.right > container.width) {
 				hiddenWidth = box.right - container.width;
 			}
+			if (hiddenHeight && !hiddenWidth) {
+				hiddenWidth = (target as HTMLElement).offsetWidth
+			} else if (hiddenWidth && !hiddenHeight) {
+				hiddenHeight = (target as HTMLElement).offsetHeight
+			}
 			const area = (target as HTMLElement).offsetHeight * (target as HTMLElement).offsetWidth;
 			const hiddenArea = hiddenHeight * hiddenWidth;
 			let visibleArea = area - hiddenArea;
