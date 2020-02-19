@@ -136,7 +136,7 @@ export class Position {
 	}
 
 	findPositionAt(offset: Offset, target: Element, placement: string): AbsolutePosition {
-		return this.calculatePosition(offset, {height: 0, width: 0}, target, placement);
+		return this.calculatePosition(offset, {top: 0, left: 0, height: 0, width: 0}, target, placement);
 	}
 
 	/**
