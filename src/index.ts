@@ -18,6 +18,8 @@ export interface AbsolutePosition {
 export type Offset = { top: number, left: number };
 
 export type ReferenceRect = {
+	top: number;
+	left: number;
 	height: number;
 	width: number;
 };
@@ -134,7 +136,7 @@ export class Position {
 	}
 
 	findPositionAt(offset: Offset, target: Element, placement: string): AbsolutePosition {
-		return this.calculatePosition(offset, {height: 0, width: 0}, target, placement);
+		return this.calculatePosition(offset, {top: 0, left: 0, height: 0, width: 0}, target, placement);
 	}
 
 	/**
@@ -177,16 +179,33 @@ export class Position {
 		const weightedPlacements = placements.map(placement => {
 			const pos = positionFunction(reference, target, placement);
 			let box = this.getPlacementBox((target as HTMLElement), pos);
-			let hiddenHeight = box.bottom - containerFunction().height;
-			let hiddenWidth = box.right - containerFunction().width;
-			// if the hiddenHeight or hiddenWidth is negative, reset to offsetHeight or offsetWidth
-			hiddenHeight = hiddenHeight < 0 ? (target as HTMLElement).offsetHeight : hiddenHeight;
-			hiddenWidth = hiddenWidth < 0 ? (target as HTMLElement).offsetWidth : hiddenWidth;
+			let hiddenHeight = 0;
+			let hiddenWidth = 0;
+			const container = containerFunction();
+			// the element is exceeding from top or bottom of its container
+			if (box.top < container.top) {
+				hiddenHeight = container.top - box.top;
+			} else if (box.bottom > container.height) {
+				hiddenHeight = box.bottom - container.height;
+			}
+			// the element is exceeding from left or right of its container
+			if (box.left < container.left) {
+				hiddenWidth = container.left - box.left;
+			} else if (box.right > container.width) {
+				hiddenWidth = box.right - container.width;
+			}
+			// if one of the hidden dimensions is 0 but the other is > 0
+			// we want to have a positive area, so setting the null one to target dimension
+			if (hiddenHeight && !hiddenWidth) {
+				hiddenWidth = (target as HTMLElement).offsetWidth;
+			} else if (hiddenWidth && !hiddenHeight) {
+				hiddenHeight = (target as HTMLElement).offsetHeight;
+			}
 			const area = (target as HTMLElement).offsetHeight * (target as HTMLElement).offsetWidth;
 			const hiddenArea = hiddenHeight * hiddenWidth;
+			// if visibleArea is 0 it means the element is fully outside container bounds
+			// and visiblePercent will then be 0
 			let visibleArea = area - hiddenArea;
-			// if the visibleArea is 0 set it back to area (to calculate the percentage in a useful way)
-			visibleArea = visibleArea === 0 ? area : visibleArea;
 			const visiblePercent = visibleArea / area;
 			return {
 				placement,
@@ -215,8 +234,10 @@ export class Position {
 	protected defaultContainerFunction(): ReferenceRect {
 		return {
 			// we go with window here, because that's going to be the simple/common case
-			width: windowRef.innerHeight - windowRef.scrollY,
-			height: windowRef.innerWidth - windowRef.scrollX
+			top: 0,
+			left: 0,
+			height: windowRef.innerHeight,
+			width: windowRef.innerWidth
 		};
 	}
 
