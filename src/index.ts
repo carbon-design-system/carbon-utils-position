@@ -195,11 +195,11 @@ export class Position {
 				hiddenWidth = box.right - container.width;
 			}
 			// if one of the hidden dimensions is 0 but the other is > 0
-			// we want to have a positive area, so setting the null one to target dimension
+			// we want to have a positive area, so setting the null one to 1
 			if (hiddenHeight && !hiddenWidth) {
-				hiddenWidth = (target as HTMLElement).offsetWidth;
+				hiddenWidth = 1;
 			} else if (hiddenWidth && !hiddenHeight) {
-				hiddenHeight = (target as HTMLElement).offsetHeight;
+				hiddenHeight = 1;
 			}
 			const area = (target as HTMLElement).offsetHeight * (target as HTMLElement).offsetWidth;
 			const hiddenArea = hiddenHeight * hiddenWidth;
