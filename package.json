@@ -48,7 +48,7 @@
     "karma-firefox-launcher": "^1.1.0",
     "karma-jasmine": "^2.0.1",
     "karma-safari-launcher": "^1.0.0",
-    "karma-webpack": "^3.0.5",
+    "karma-webpack": "^5.0.1",
     "parcel-bundler": "^1.12.1",
     "rollup": "^1.23.1",
     "semantic-release": "^15.13.24",
