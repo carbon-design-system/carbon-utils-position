@@ -7,7 +7,7 @@
   "scripts": {
     "build": "npm run build:clean && concurrently npm:build:src npm:build:demo npm:build:package",
     "build:clean": "rm -rf dist && mkdir dist",
-    "build:package": "cp package.json dist/",
+    "build:package": "cp package.json dist/ && cp telemetry.yml dist/",
     "build:src": "npm run build:tsc && npm run build:umd",
     "build:umd": "rollup dist/index.js --file dist/index.umd.js --format umd --name 'carbonUtilsPosition'",
     "build:tsc": "tsc",
@@ -15,7 +15,8 @@
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "demo": "parcel demo/index.html -d dist/demo",
     "test": "karma start",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "postinstall": "ibmtelemetry --config=telemetry.yml"
   },
   "publishConfig": {
     "access": "public"
@@ -63,5 +64,8 @@
       "name": "Cal Smith",
       "email": "callums@ca.ibm.com"
     }
-  ]
+  ],
+  "dependencies": {
+    "@ibm/telemetry-js": "^1.3.0"
+  }
 }
