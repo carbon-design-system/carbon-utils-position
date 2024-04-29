@@ -6,7 +6,7 @@
   "module": "index.js",
   "scripts": {
     "build": "npm run build:clean && concurrently npm:build:src npm:build:demo npm:build:package",
-    "build:clean": "rm -rf dist && mkdir dist",    
+    "build:clean": "rm -rf dist && mkdir dist",
     "build:package": "cp package.json dist/ && cp telemetry.yml dist/",
     "build:src": "npm run build:tsc && npm run build:umd",
     "build:umd": "rollup dist/index.js --file dist/index.umd.js --format umd --name 'carbonUtilsPosition'",
